@@ -7,8 +7,8 @@ namespace tower120::utils {
     template<class Self, class Getter, class Setter>
     class Property {
         Self *self;
-        Getter getter;
-        Setter setter;
+        /* [[no_unique_address]] */ Getter getter;
+        /* [[no_unique_address]] */ Setter setter;
 
         using GetT = decltype(getter(*self));
 
@@ -34,7 +34,7 @@ namespace tower120::utils {
 
         // getters
         decltype(auto) get() const {
-            return getter(*self);
+            return getter(static_cast<const Self&>(*self));
         }
 
         operator GetT() const {
