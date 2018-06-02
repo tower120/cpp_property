@@ -11,15 +11,15 @@ class Data{
     In m_i;
 public:
     auto i(){
-        return Property(this,
-           [](const Data& self) -> In {
-                return {
-                    self.m_i.x * 10,
-                    self.m_i.y * -10
-                };
+        return Property(
+           [&]() -> In {
+               return {
+                   m_i.x * 10,
+                   m_i.y * -10
+               };
            },
-           [](Data& self, const auto& i){
-                self.m_i = i;
+           [](const auto& i){
+               m_i = i;
            }
         );
     }
@@ -36,17 +36,17 @@ int main(){
 
 Simple interface:
 ```
-Property(this, getter, setter)
+Property(getter, setter)
 ```
 
 ```
-Getter(const Self&) -> T
-Getter(const Self&) -> const T&
-Getter(const Self&) -> const T*
+Getter() -> T
+Getter() -> const T&
+Getter() -> const T*
 ```
 
 ```
-Setter(Self&, Args&&...)
+Setter(Args&&...)
 ```
 
 
@@ -76,38 +76,20 @@ From mutable:
 ```c++
     class Data{
         int m_j;
-        auto& self_mut() const { return *const_cast<Data*>(this); }
+        auto& self_mut() const { return const_cast<Data&>(*this); }
     public:
         auto j() {
-            return Property{this
-                , [](const Data& self) { return self.m_j; }
-                , [](Data& self, int j){ self.m_j = j; }
+            return Property{
+                [&]()     { return m_j; },
+                [&](int j){ m_j = j; }
             };
         }
         auto j() const {
-            return self_mut().j().make_const({});
+            return self_mut().j().make_const();
         }
     };
 ```
 
-
-From const:
-```c++
-    class Data{
-        int m_j;
-        const auto& self_const() const { return *this; }
-    public:
-        auto j() const {
-            return Property{this
-                , [](const Data& self) { return self.m_j; }
-                , [](Data& self, int j){ self.m_j = j; }
-            };
-        }
-        auto j() {
-            return self_const().j().make_mut({});
-        }
-    };
-```
 
 ---
 
