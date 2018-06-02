@@ -34,7 +34,38 @@ int main(){
 }
 ```
 
-Simple interface `Property(this, getter, setter)`.
+Simple interface:
+```
+Property(this, getter, setter)
+```
+
+```
+Getter(const Self&) -> T
+Getter(const Self&) -> const T&
+Getter(const Self&) -> const T*
+```
+
+```
+Setter(Self&, Args&&...)
+```
+
+
+**Accessors**:
+
+`operator*() const`
+
+`operator->() const`
+
+`get() const`
+
+`operator T() const`
+
+
+**Mutators**:
+
+`void set(Args&&...)`
+
+`void operator=(Value&&)`
 
 
 ---
