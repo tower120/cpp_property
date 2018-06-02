@@ -2,6 +2,7 @@
 #include "Property.h"
 #include "const_mutable_helper.h"
 
+using namespace tower120::utils;
 
 struct In{
     int x;
@@ -29,7 +30,7 @@ public:
 int main() {
     Data data;
     data.i() = In{10,20};
-    std::cout << data.i()->x;
+    std::cout << data.i()->x << " : " << data.i()->y << std::endl;
 
     const_mutable_helper::main();
     return 0;
