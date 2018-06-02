@@ -93,5 +93,6 @@ From mutable:
 
 ---
 
+See [stateless](https://github.com/tower120/cpp_property/tree/stateless) branch for other api.
 
 Requires C++17.
