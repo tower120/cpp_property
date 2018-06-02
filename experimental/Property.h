@@ -33,7 +33,6 @@ namespace tower120::utils::experimental {
         Property(const Getter &getter, const Setter &setter)
                 : getter(getter), setter(setter) {}
 
-
         // getters
         decltype(auto) get() const {
             return getter();
@@ -81,6 +80,12 @@ namespace tower120::utils::experimental {
         template<class OtherGetter, class OtherSetter>
         bool operator!=(const Property<OtherGetter, OtherSetter> &other) const {
             return get() != other.get();
+        }
+
+
+        auto make_const() const {
+            struct empty{};
+            return Property<Getter, empty>(getter, empty{});
         }
 
     };

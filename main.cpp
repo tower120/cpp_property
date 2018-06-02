@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Property.h"
 #include "const_mutable_helper.h"
+#include "experimental/experimental_Property_test.h"
 
 using namespace tower120::utils;
 
@@ -33,5 +34,6 @@ int main() {
     std::cout << data.i()->x << " : " << data.i()->y << std::endl;
 
     const_mutable_helper::main();
+    experimental_Property_test::main();
     return 0;
 }

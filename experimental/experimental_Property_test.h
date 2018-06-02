@@ -15,12 +15,12 @@ namespace experimental_Property_test{
     public:
         auto j() {
             return Property(
-                [&]()              { return m_i; },
-                [&](const auto& i) { m_i = i; }
+                [&]() -> const auto& { return m_i; },
+                [&](const auto& i)   { m_i = i; }
             );
         }
-        const auto j() const{
-            return const_cast<Data&>(*this).j();
+        auto j() const {
+            return const_cast<Data&>(*this).j().make_const();
         }
     };
 
