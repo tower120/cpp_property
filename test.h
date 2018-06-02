@@ -2,8 +2,8 @@
 
 #include "Property.h"
 
-namespace experimental_Property_test{
-    using namespace tower120::utils::experimental;
+namespace test{
+    using namespace tower120::utils;
 
     struct In{
         int x;

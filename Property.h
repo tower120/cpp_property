@@ -1,16 +1,20 @@
 #pragma once
 
 #include <utility>
+#include <type_traits>
+
 
 namespace tower120::utils {
 
-    template<class Self, class Getter, class Setter>
+    template<class Getter, class Setter>
     class Property {
-        Self *self;
-        /* [[no_unique_address]] */ Getter getter;
-        /* [[no_unique_address]] */ Setter setter;
+        Getter getter;
+        Setter setter;
 
-        using GetT = decltype(getter(*self));
+        using GetT = decltype(getter());
+
+        static_assert(std::is_object_v<GetT> || std::is_const_v<std::remove_reference_t<GetT>>
+                      ,"Property Getter must return const ref/pointer or object.");
 
         // from Boost
         template<typename T>
@@ -24,17 +28,14 @@ namespace tower120::utils {
 
     public:
         // require c++17 guaranteed rvo without move ctr
-        Property(const Property &) = delete;
-
-        Property(Property &&) = delete;
-
-        Property(Self *self, const Getter &getter, const Setter &setter)
-                : self(self), getter(getter), setter(setter) {}
-
+        //Property(const Property &) = delete;
+        //Property(Property &&) = delete;
+        Property(const Getter &getter, const Setter &setter)
+                : getter(getter), setter(setter) {}
 
         // getters
         decltype(auto) get() const {
-            return getter(static_cast<const Self&>(*self));
+            return getter();
         }
 
         operator GetT() const {
@@ -61,7 +62,7 @@ namespace tower120::utils {
         // args... here, so you can use them with lambda overload
         template<class ...Args>
         void set(Args &&... args) {
-            setter(*self, std::forward<Args>(args)...);
+            setter(std::forward<Args>(args)...);
         }
 
         template<class Value>
@@ -71,36 +72,20 @@ namespace tower120::utils {
 
 
         // forward comparison operators (do we need them?)
-        template<class OtherSelf, class OtherGetter, class OtherSetter>
-        bool operator==(const Property<OtherSelf, OtherGetter, OtherSetter> &other) const {
+        template<class OtherGetter, class OtherSetter>
+        bool operator==(const Property<OtherGetter, OtherSetter> &other) const {
             return get() == other.get();
         }
 
-        template<class OtherSelf, class OtherGetter, class OtherSetter>
-        bool operator!=(const Property<OtherSelf, OtherGetter, OtherSetter> &other) const {
+        template<class OtherGetter, class OtherSetter>
+        bool operator!=(const Property<OtherGetter, OtherSetter> &other) const {
             return get() != other.get();
         }
 
 
-        // helper
-        class Acess {
-            friend Self;
-
-            Acess() {}
-
-            Acess(const Acess &) = delete;
-
-            Acess(Acess &&) = delete;
-        };
-
-        decltype(auto) make_mut(Acess) const {
-            using MutSelf = std::remove_const_t<Self>;
-            return Property<MutSelf, Getter, Setter>(const_cast<MutSelf *>(self), getter, setter);
-        }
-
-        decltype(auto) make_const(Acess) const {
-            using ConstSelf = std::add_const_t<Self>;
-            return Property<ConstSelf, Getter, Setter>(static_cast<ConstSelf *>(self), getter, setter);
+        auto make_const() const {
+            struct empty{};
+            return Property<Getter, empty>(getter, empty{});
         }
 
     };
