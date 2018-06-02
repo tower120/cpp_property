@@ -18,7 +18,7 @@ public:
                    m_i.y * -10
                };
            },
-           [](const auto& i){
+           [&](const auto& i){
                m_i = i;
            }
         );
