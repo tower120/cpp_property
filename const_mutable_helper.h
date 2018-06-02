@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Propetry.h"
+#include "Property.h"
 
 
 namespace const_mutable_helper{
