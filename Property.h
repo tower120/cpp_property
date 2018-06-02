@@ -28,8 +28,8 @@ namespace tower120::utils {
 
     public:
         // require c++17 guaranteed rvo without move ctr
-        //Property(const Property &) = delete;
-        //Property(Property &&) = delete;
+        Property(const Property &) = delete;
+        Property(Property &&) = delete;
         Property(const Getter &getter, const Setter &setter)
                 : getter(getter), setter(setter) {}
 
